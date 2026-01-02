@@ -9,6 +9,7 @@ Objectifs :
 - Être capable d'évaluer les trajectoires
 - Optmiser une trajectoire (via algorithme génétique)
 - Exporter une trajectoire sous deux format :
+  
   1er format : une liste où les colonnes sont 
   | x | y | z | BP |
   avec x, y, z les positions du i-ème point de passage et BP un booléen identiquant si oui ou non le point est en contact avec le sol
@@ -19,7 +20,7 @@ Objectifs :
 
 # Résulats 
 
-![til](./Resultats/traj.gif)
+![til](./Resultat/traj.gif)
 <legend>Simulation du robot suivant une trajectoire optimisée (itérations : 300)</legend>
 
 ![alt text](https://github.com/KLB-F/ProjetRobotique/blob/ffc319b9bc4cacaf6672e6c26e9feeabc2315b62/Resultats/%20EvolutionVitesseIteration.png)
