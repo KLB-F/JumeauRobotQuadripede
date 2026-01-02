@@ -4,6 +4,8 @@ Ce projet s'inscrit dans un projet de groupe visant à concevoir et à faire ré
 
 Cela m'a mener à la réalisation d'un jumeau numérique cinématique d'un robot quadrupède afin de concevoir sa trajectoire et de l'optimiser via un algorithme génétique.
 
+Auncune bilbiothéque dédié à la robotique n'a été utilisé.
+
 Objectifs : 
 - Réaliser un jumeau numérique cinématique du robot capable de réaliser une trajectoire quelquonque
 - Être capable d'évaluer les trajectoires
