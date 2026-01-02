@@ -1,17 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-        ································································
-        :░█▀█░█▀▄░█▀█░▀▀█░█▀▀░▀█▀░░░█▀▄░█▀█░█▀▄░█▀█░▀█▀░▀█▀░▄▀▄░█░█░█▀▀:
-        :░█▀▀░█▀▄░█░█░░░█░█▀▀░░█░░░░█▀▄░█░█░█▀▄░█░█░░█░░░█░░█\█░█░█░█▀▀:
-        :░▀░░░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░░░▀░▀░▀▀▀░▀▀░░▀▀▀░░▀░░▀▀▀░░▀\░▀▀▀░▀▀▀:
-        ································································
-······················································································
-:░█▄█░█▀▀░▀█▀░░░█░█▄█░█▀▀░█▀▄░░░█▀▀░▀█▀░░░▀█▀░█▀▄░█▀█░▀▀█░█▀▀░█▀▀░▀█▀░█▀█░▀█▀░█▀▄░█▀▀:
-:░█░█░█░█░░█░░▄▀░░█░█░█░█░█░█░░░█▀▀░░█░░░░░█░░█▀▄░█▀█░░░█░█▀▀░█░░░░█░░█░█░░█░░█▀▄░█▀▀:
-:░▀░▀░▀▀▀░▀▀▀░▀░░░▀░▀░▀▀▀░▀▀░░░░▀▀▀░░▀░░░░░▀░░▀░▀░▀░▀░▀▀░░▀▀▀░▀▀▀░░▀░░▀▀▀░▀▀▀░▀░▀░▀▀▀:
-······················································································
-
-
 Code de la partie MGD/MGI et calcul de Trajectoire
 
 Responsable : Le Bellec Killian
@@ -27,16 +15,17 @@ from Patte import Patte
 
 import meilleurTraj
 
-l1, l2, l3 = [1.48, 0.90, 0.43] #En dm
+l1, l2, l3 = [1.48, 0.90, 0.43] #En dm #Dimension du robot
 
 robot = Robot(l1, l2, l3)
 
-m1, m2, m3 = Moteur(0, -np.pi/2, np.pi/2, 0.7), Moteur(0, -np.pi/2, np.pi/2, 0.7), Moteur(0, -np.pi/2, np.pi/2, 0.7)
+m1, m2, m3 = Moteur(0, -np.pi/2, np.pi/2, 0.7), Moteur(0, -np.pi/2, np.pi/2, 0.7), Moteur(0, -np.pi/2, np.pi/2, 0.7) #Moteur
 
-patte = Patte(l1, l2, l3,[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], m1, m2, m3)
+patte = Patte(l1, l2, l3,[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], m1, m2, m3) #Création d'une patte
 
 
-"""
+#1er exemple : Optimisation d'une trajectoire via algorithme génétique
+""" 
 traj = Trajectoire([np.array(patte.MGD(-np.pi/3, np.pi/2, 0)), np.array(patte.MGD(np.pi/4, np.pi/2, 0)), np.array(patte.MGD(np.pi/4, 0, 0)),np.array(patte.MGD(-np.pi/4, 0, 0)), np.array(patte.MGD(-np.pi/3, np.pi/2, 0))], [True, True, False, False, False], 0.1)
 q0 = [[-np.pi/3, np.pi/2, 0], [np.pi/4, np.pi/2, 0], [np.pi/4, 0, 0],[-np.pi/4, 0, 0], [-np.pi/3, np.pi/2, 0]]
 BP = [True, True, False, False, False]
@@ -44,7 +33,18 @@ BP = [True, True, False, False, False]
 qB = meilleurTraj.cherche_best_traj(robot, q0, BP, 1, 99)
 print(qB)
 traj = Trajectoire([np.array(patte.MGD(*qB[i])) for i in range(len(qB))], BP)
+"""
 
+#2eme exemple : importation d'une trajectoire utilisé pour la rotation du robot, transformation en une trajectoire pour marher droit puis intégration dans le robot
+"""
+traj = patte.load_Traj("600S")
+trajbis = Trajectoire([np.array(patte.MGD(*[-patte.MGI(*[e[0], e[1], e[2]])[0], patte.MGI(*[e[0], e[1], e[2]])[1], patte.MGI(*[e[0], e[1], e[2]])[2]])) for e in traj.getTraj()], traj.getBP())
+
+robot.robot_setTrajCustom(traj, trajbis, traj, trajbis)
+"""
+
+#3eme exemple création d'une trajectoire, exportation en gif, et exportation de celle-ci
+"""
 traj = Trajectoire([[np.float64(1.1288882941162778e-16), np.float64(-1.8436144934233345), np.float64(-1.2532766850655326)],
  [np.float64(1.3040192365800187),
  np.float64(-1.3041713156618442),
@@ -56,35 +56,15 @@ traj = Trajectoire([[np.float64(1.1288882941162778e-16), np.float64(-1.843614493
  [np.float64(2.2236661904130406), np.float64(0.32221111600885183), np.float64(-0.9010423215718447)], 
  [np.float64(2.043739049130081), np.float64(-1.2038416064281223), np.float64(-0.5501720648071368)], 
  [np.float64(1.1288882941162778e-16), np.float64(-1.8436144934233345), np.float64(-1.2532766850655326)]], [True, True, True, True, False, False, False])
-"""
-traj = patte.load_Traj("600S")
-trajbis = Trajectoire([np.array(patte.MGD(*[-patte.MGI(*[e[0], e[1], e[2]])[0], patte.MGI(*[e[0], e[1], e[2]])[1], patte.MGI(*[e[0], e[1], e[2]])[2]])) for e in traj.getTraj()], traj.getBP())
 
-robot.robot_setTrajCustom(traj, trajbis, traj, trajbis)
-print(robot.robot_evalTrajSprint())
-"""
-#robot.aff_RobotAnim(0.2, 450)
-
-
-#robot.robot_setTraj(traj)
-
-#robot.exportTrajBis("E600S")
-#robot.aff_RobotAnim(0.2, 450)
-#robot.robot_setTrajCustom(traj, trajbis, traj, trajbis)
-
-
-#print(robot.robot_evalTrajSprint())
-
-#robot.robot_setTraj(trajbis)
+robot.robot_setTraj(traj)
+robot.aff_RobotAnim(0.2, 450)
+#On reset
+robot.robot_setTraj(traj)
+robot.exportTrajBis("trajectoire_exporte")
 """
 
-
-robot.robot_setTrajCustom(traj, traj, traj, traj, ret=[0, 1, -1, 0])
-
-#robot.robot_traj_dictat()
-#robot.aff_RobotAnim_d(0.2, 400)
-
-#robot.aff_RobotAnim(0.2, 450)
+""" DEBUGAGE SEULEMENT
 
 fig, axs = plt.subplots(5, sharex=True)
 
@@ -144,3 +124,4 @@ axs[4].set_title("pos. Traj")
 axs[4].axhline(y=1.5, color='red')
 
 plt.show()
+"""
